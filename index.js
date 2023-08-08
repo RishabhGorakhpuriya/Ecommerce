@@ -29,36 +29,36 @@ const { Order } = require('./model/Order');
 // webhook
 const endpointSecret = process.env.ENDPOINT_SECRET;
 
-server.post('/webhook', express.raw({type: 'application/json'}),async (request, response) => {
-  const sig = request.headers['stripe-signature'];
+// server.post('/webhook', express.raw({type: 'application/json'}),async (request, response) => {
+//   const sig = request.headers['stripe-signature'];
 
-  let event;
+//   let event;
 
-  try {
-    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-  } catch (err) {
-    response.status(400).send(`Webhook Error: ${err.message}`);
-    return;
-  }
+//   try {
+//     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+//   } catch (err) {
+//     response.status(400).send(`Webhook Error: ${err.message}`);
+//     return;
+//   }
 
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntentSucceeded = event.data.object;
-    //   console.log({paymentIntentSucceeded})
-    const order = await Order.findById(paymentIntentSucceeded.metadata.orderId);
-    order.paymentStatus = 'recieved';
-    await order.save();
-      // Then define and call a function to handle the event payment_intent.succeeded
-      break;
-    // ... handle other event types
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
+//   // Handle the event
+//   switch (event.type) {
+//     case 'payment_intent.succeeded':
+//       const paymentIntentSucceeded = event.data.object;
+//     //   console.log({paymentIntentSucceeded})
+//     const order = await Order.findById(paymentIntentSucceeded.metadata.orderId);
+//     order.paymentStatus = 'recieved';
+//     await order.save();
+//       // Then define and call a function to handle the event payment_intent.succeeded
+//       break;
+//     // ... handle other event types
+//     default:
+//       console.log(`Unhandled event type ${event.type}`);
+//   }
 
-  // Return a 200 response to acknowledge receipt of the event
-  response.send();
-});
+//   // Return a 200 response to acknowledge receipt of the event
+//   response.send();
+// });
 
 // jwt option
 const opts = {}
