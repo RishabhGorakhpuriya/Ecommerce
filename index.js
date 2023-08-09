@@ -67,7 +67,7 @@ opts.secretOrKey = SECRET_KEY;
 
 
 //middleware
-server.use(express.static(path.resolve(__dirname,'build')))
+server.use('/auth',authRouter.router, express.static(path.resolve(__dirname,'build')))
 server.use(cookieParser());
 server.use(session({
     secret: process.env.SESSION_KEY,
